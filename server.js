@@ -31,7 +31,7 @@ app.post('/api/notes', (req, res) => {
     newNote.id = uuid();
     parsedNotes.push(newNote);
     console.log(parsedNotes);
-    fs.writeFile("./db/db.json", JSON.stringify(parsedNotes), function(parsedNotes, err){
+    fs.writeFile("./db/db.json", JSON.stringify(parsedNotes), (parsedNotes, err) => {
         (err) ? console.log(err) : console.log("note added!");
     });
     res.json(parsedNotes);
@@ -41,8 +41,9 @@ app.get('/api/notes/:id', (req, res) => {
     if (req.params.id) {
         console.info(`${req.method} request received to get a single note`);
         const noteId = req.params.id;
-        for (let i = 0; i < notes.length; i++) {
-          const currentNote = notes[i];
+        let parsedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+        for (let i = 0; i < parsedNotes.length; i++) {
+          const currentNote = parsedNotes[i];
           if (currentNote.id === noteId) {
             res.status(200).json(currentNote);
             return;
@@ -53,6 +54,23 @@ app.get('/api/notes/:id', (req, res) => {
         res.status(400).send('Note ID not provided');
       }
 });
+
+app.delete('/api/notes/:id', (req, res) => {
+    const noteId = req.params.id;
+    let parsedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+    console.log(parsedNotes);
+    for (let i = 0; i < parsedNotes.length; i++) {
+        const currentNote = parsedNotes[i];
+        if (currentNote.id === noteId) {
+        console.log("request received to delete note: " + noteId + " with index of " + i);
+        parsedNotes.splice(i, 1);
+        fs.writeFile("./db/db.json", JSON.stringify(parsedNotes), (parsedNotes, err) => {
+            (err) ? console.log(err) : console.log("note deleted!");
+        })
+        }
+    }
+    res.json(notes);   
+    });
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
