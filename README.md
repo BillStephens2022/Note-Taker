@@ -5,6 +5,8 @@
   This is a Note-Taking app.  The project was to successfully connect the front end to the back end and provide the functionality to post, save, and delete notes.  The saved notes persist and are available when the deployed app is accessed again and/or refreshed.
 
   Screenshot:
+  
+![Screen Shot 2023-01-03 at 3 12 05 PM](https://user-images.githubusercontent.com/113722447/210434285-080e0859-b5c9-4b7d-ac9f-316f7b6f161e.png)
 
   
   ## Table of Contents
