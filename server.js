@@ -6,11 +6,11 @@ const path = require('path');
 //import notes json file used for saving notes
 const notes = require('./db/db.json');
 
-// helper to add a random ID to each note object
-const uuid = require('./helpers/uuid');
+// NPM uuid package - adds a random ID to each note object.
+const { v4: uuidv4 } = require('uuid');
 
 // definite local host port to use
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // create instance of Express
 const app = express();
@@ -39,9 +39,8 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     let parsedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
     let newNote = req.body;
-    newNote.id = uuid();
+    newNote.id = uuidv4();
     parsedNotes.push(newNote);
-    console.log(parsedNotes);
     fs.writeFile("./db/db.json", JSON.stringify(parsedNotes), (parsedNotes, err) => {
         (err) ? console.log(err) : console.log("note added!");
     });
@@ -71,7 +70,6 @@ app.get('/api/notes/:id', (req, res) => {
 app.delete('/api/notes/:id', (req, res) => {
     const noteId = req.params.id;
     let parsedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
-    console.log(parsedNotes);
     for (let i = 0; i < parsedNotes.length; i++) {
         const currentNote = parsedNotes[i];
         if (currentNote.id === noteId) {
